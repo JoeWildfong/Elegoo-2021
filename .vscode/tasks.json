@@ -6,7 +6,7 @@
         {
             "label": "Resolve IP",
             "type": "shell",
-            "command": ".\\scripts\\ip.ps1",
+            "command": "./scripts/ip.sh",
             "windows": {
                 "command": ".\\scripts\\ip.ps1"
             },
