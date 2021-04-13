@@ -1,0 +1,7 @@
+{
+    "board": "ElegooV3Plus:avr:uno_elegoo",
+    "sketch": "main.ino",
+    "intelliSenseGen": "disable",
+    "port": "192.168.2.239",
+    "output": "./build"
+}
