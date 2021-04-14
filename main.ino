@@ -3,12 +3,12 @@
 
 bool testFunc(unsigned long startTime) {
     unsigned long runtime = millis() - startTime;
-    if (runtime < 700) {
+    if (runtime < 500) {
         Serial.println("Forwards");
-        Drivebase::drive(1, 1);
+        Drivebase::ArcadeDrive(1, 0.5);
     } else {
         Serial.println("Backwards");
-        Drivebase::drive(-1, -1);
+        Drivebase::ArcadeDrive(-1, -0.5);
     }
     return false;
 }

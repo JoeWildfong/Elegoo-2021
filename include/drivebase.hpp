@@ -15,9 +15,14 @@ void init();
 /// Sets motor speed and direction to given values between -1 and 1.
 /// Negative values move backwards.
 /// Robot will keep moving - it will not automatically stop.
-void drive(double left, double right);
+void TankDrive(double left, double right);
 
-/// Stops the robot. Equivalent to drive(0, 0).
+/// Sets motors based on x and y coordinates. 
+/// Positive y is forwards, positive x is a right turn. 
+/// Robot will not automatically stop.
+void ArcadeDrive(double y, double x);
+
+/// Stops the robot. Equivalent to TankDrive(0, 0) or ArcadeDrive(0, 0).
 void stop();
 
 namespace {
