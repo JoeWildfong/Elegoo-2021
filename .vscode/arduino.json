@@ -3,5 +3,5 @@
     "sketch": "main.ino",
     "intelliSenseGen": "disable",
     "port": "192.168.2.239",
-    "output": "./build"
+    "output": "../build/Elegoo-2021"
 }
