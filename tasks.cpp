@@ -34,7 +34,9 @@ bool Tasks::Task::run() {
 }
 
 void Tasks::Task::done() {
-    this->end();
+    if (this->end != NULL) {
+        this->end();
+    }
     fn = NULL;
 }
 

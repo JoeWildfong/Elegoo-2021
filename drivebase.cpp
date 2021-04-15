@@ -1,65 +1,35 @@
 #include "include/drivebase.hpp"
 
-static double copySign(double dest, double source) {
+static int16_t copySign(int16_t dest, int16_t source) {
     return source >= 0 ? dest : -dest;
 }
 
-static double clamp(double in, double min, double max) {
+static int16_t clamp(int16_t in, int16_t min, int16_t max) {
     return in < min ? min : in > max ? max : in;
 }
 
-static void setPower(double left, double right) {
-    analogWrite(Drivebase::LEFT_SPEED_PIN, round(abs(left) * 1023));
-    analogWrite(Drivebase::RIGHT_SPEED_PIN, round(abs(right) * 1023));
-
-    if (left == 0) {
-        digitalWrite(Drivebase::LEFT_FORWARD_PIN, LOW);
-        digitalWrite(Drivebase::LEFT_BACKWARD_PIN, LOW);
-    } else if (left < 0) {
-        digitalWrite(Drivebase::LEFT_FORWARD_PIN, LOW);
-        digitalWrite(Drivebase::LEFT_BACKWARD_PIN, HIGH);
-    } else {
-        digitalWrite(Drivebase::LEFT_FORWARD_PIN, HIGH);
-        digitalWrite(Drivebase::LEFT_BACKWARD_PIN, LOW);
-    }
-
-    if (right == 0) {
-        digitalWrite(Drivebase::RIGHT_FORWARD_PIN, LOW);
-        digitalWrite(Drivebase::RIGHT_BACKWARD_PIN, LOW);
-    } else if (right < 0) {
-        digitalWrite(Drivebase::RIGHT_FORWARD_PIN, LOW);
-        digitalWrite(Drivebase::RIGHT_BACKWARD_PIN, HIGH);
-    } else {
-        digitalWrite(Drivebase::RIGHT_FORWARD_PIN, HIGH);
-        digitalWrite(Drivebase::RIGHT_BACKWARD_PIN, LOW);
-    }
+static int16_t applyDeadzone(int16_t in, uint8_t deadzone) {
+    return abs(in) < deadzone ? 0 : in;
 }
 
-void Drivebase::init() {
-    pinMode(Drivebase::LEFT_SPEED_PIN, OUTPUT);
-    pinMode(Drivebase::RIGHT_SPEED_PIN, OUTPUT);
-    pinMode(Drivebase::LEFT_FORWARD_PIN, OUTPUT);
-    pinMode(Drivebase::LEFT_BACKWARD_PIN, OUTPUT);
-    pinMode(Drivebase::RIGHT_FORWARD_PIN, OUTPUT);
-    pinMode(Drivebase::RIGHT_BACKWARD_PIN, OUTPUT);
-    digitalWrite(LEFT_SPEED_PIN, HIGH);
-    digitalWrite(RIGHT_SPEED_PIN, HIGH);
+void Drivebase::init(ElegooCar *car) { m_car = car; }
+
+void Drivebase::setDeadzone(uint8_t deadzone) { m_deadzone = deadzone; }
+
+void Drivebase::TankDrive(int16_t left, int16_t right) {
+    left = applyDeadzone(left, m_deadzone);
+    right = applyDeadzone(right, m_deadzone);
+    m_car->setSpeed(left, right);
 }
 
-void Drivebase::TankDrive(double left, double right) {
-    left = clamp(left, -1, 1);
-    right = clamp(right, -1, 1);
-    setPower(left, right);
-}
+void Drivebase::ArcadeDrive(int16_t y, int16_t x) {
+    int16_t left, right;
 
-void Drivebase::ArcadeDrive(double y, double x) {
-    double left, right;
+    int16_t maxInput = copySign(max(abs(y), abs(x)), y);
 
-    double maxInput = copySign(max(abs(y), abs(x)), y);
-
-    if (y >= 0.0) {
+    if (y >= 0) {
         // First quadrant, else second quadrant
-        if (x >= 0.0) {
+        if (x >= 0) {
             left = maxInput;
             right = y - x;
         } else {
@@ -68,7 +38,7 @@ void Drivebase::ArcadeDrive(double y, double x) {
         }
     } else {
         // Third quadrant, else fourth quadrant
-        if (x >= 0.0) {
+        if (x >= 0) {
             left = y + x;
             right = maxInput;
         } else {
@@ -77,9 +47,9 @@ void Drivebase::ArcadeDrive(double y, double x) {
         }
     }
 
-    left = clamp(left, -1, 1);
-    right = clamp(right, -1, 1);
-    setPower(left, right);
+    left = applyDeadzone(left, m_deadzone);
+    right = applyDeadzone(right, m_deadzone);
+    m_car->setSpeed(left, right);
 }
 
-void Drivebase::stop() { Drivebase::TankDrive(0, 0); }
+void Drivebase::stop() { m_car->setSpeed(0, 0); }
