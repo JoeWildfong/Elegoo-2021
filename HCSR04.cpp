@@ -3,7 +3,7 @@
   Created by Martin Sosic, June 11, 2016.
 */
 
-#include "HCSR04.h"
+#include "lib/HCSR04.h"
 #include "Arduino.h"
 
 UltraSonicDistanceSensor::UltraSonicDistanceSensor(int triggerPin,
