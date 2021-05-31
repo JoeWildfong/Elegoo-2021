@@ -14,9 +14,9 @@ void setup() {
     Drivebase::setDeadzone(deadzone);
 }
 
-void autonomous() {}
+static void autonomous() {}
 
-void teleop() { Drivebase::arcadeDrive(ds->getLY(), ds->getLX()); }
+static void teleop() { Drivebase::arcadeDrive(ds->getLY(), ds->getLX()); }
 
 void loop() {
     // update the DriverStation class - this will check if there is new data
