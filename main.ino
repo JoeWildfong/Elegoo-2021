@@ -2,6 +2,7 @@
 
 #include "include/drivebase.hpp"
 #include "include/tasks.hpp"
+#include "include/encoders.hpp"
 
 static ElegooCar *joebot = new ElegooCar();
 static DriverStation *ds = new DriverStation();
@@ -12,6 +13,7 @@ void setup() {
     Serial.begin(115200);
     Drivebase::init(joebot);
     Drivebase::setDeadzone(deadzone);
+    Encoders::init();
 }
 
 static void autonomous() {}
