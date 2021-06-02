@@ -53,24 +53,24 @@ void Encoders::init() {
 }
 
 uint16_t Encoders::getLeftTicks() {
-    // disable left encoder interrupt
-    *digitalPinToPCMSK(leftPin) &= ~bit(leftPCMSKbit);
+    // disable interrupts
+    cli();
 
     const uint16_t out = leftTicks;
 
-    // re-enable interrupt
-    *digitalPinToPCMSK(leftPin) |= bit(leftPCMSKbit);
+    // re-enable interrupts
+    sei();
     return out;
 }
 
 uint16_t Encoders::getRightTicks() {
-    // disable right encoder interrupt
-    *digitalPinToPCMSK(rightPin) &= ~bit(rightPCMSKbit);
+    // disable interrupts
+    cli();
 
     const uint16_t out = rightTicks;
 
     // re-enable interrupt
-    *digitalPinToPCMSK(rightPin) |= bit(rightPCMSKbit);
+    sei();
     return out;
 }
 
