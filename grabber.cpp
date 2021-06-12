@@ -2,7 +2,7 @@
 
 #include <Servo.h>
 
-static constexpr uint8_t grabberServoPin = 6;
+static constexpr uint8_t grabberServoPin = 3;
 
 static uint8_t servoAngle = 0;
 
