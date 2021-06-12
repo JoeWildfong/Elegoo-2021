@@ -13,7 +13,10 @@ static uint8_t clampRange(uint8_t input) {
     return input < 0 ? 0 : input > 180 ? 180 : input;
 }
 
-void Grabber::init() { grabberServo.attach(grabberServoPin); }
+void Grabber::init() {
+    grabberServo.attach(grabberServoPin);
+    grabberServo.write(servoAngle);
+}
 
 void Grabber::setAngle(uint8_t degrees) {
     servoAngle = clampRange(degrees);
