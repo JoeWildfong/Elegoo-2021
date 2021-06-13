@@ -1,24 +1,38 @@
 #include "lib/DriverStation.h"
 
 #include "include/drivebase.hpp"
-#include "include/tasks.hpp"
 #include "include/encoders.hpp"
+#include "include/grabber.hpp"
+#include "include/tasks.hpp"
 
 static ElegooCar *joebot = new ElegooCar();
 static DriverStation *ds = new DriverStation();
 
-static constexpr uint8_t deadzone = 32;
+static constexpr uint8_t DRIVEBASE_DEADZONE = 32;
+
+static constexpr uint8_t GRABBER_DEADZONE = 5;
+static constexpr float GRABBER_COEFFICIENT = 0.3;
 
 void setup() {
     Serial.begin(115200);
+
     Drivebase::init(joebot);
-    Drivebase::setDeadzone(deadzone);
+    Drivebase::setDeadzone(DRIVEBASE_DEADZONE);
+
     Encoders::init();
+
+    Grabber::init();
+    Grabber::setDeadzone(GRABBER_DEADZONE);
 }
 
 static void autonomous() {}
 
-static void teleop() { Drivebase::arcadeDrive(ds->getLY(), ds->getLX()); }
+static void teleop() {
+    Drivebase::arcadeDrive(ds->getLY(), ds->getLX());
+    
+    int16_t triggerDiff = (int16_t)ds->getLTrig() - (int16_t)ds->getRTrig();
+    Grabber::changeAngle(triggerDiff * GRABBER_COEFFICIENT);
+}
 
 void loop() {
     // update the DriverStation class - this will check if there is new data
