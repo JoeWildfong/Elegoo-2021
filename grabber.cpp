@@ -1,48 +1,47 @@
 #include "include/grabber.hpp"
+#include "include/util.hpp"
 
 #include <Servo.h>
 
 static constexpr uint8_t grabberServoPin = 3;
 
+static uint8_t servoDeadzone = 0;
 static uint8_t servoAngle = 0;
 
 static Servo grabberServo;
-
-static uint8_t clampRange(uint8_t input) {
-    // clamps a uint8_t to 0 - 180 range
-    return input < 0 ? 0 : input > 180 ? 180 : input;
-}
 
 void Grabber::init() {
     grabberServo.attach(grabberServoPin);
     grabberServo.write(servoAngle);
 }
 
+void Grabber::setDeadzone(uint8_t deadzone) { servoDeadzone = deadzone; }
+
 void Grabber::setAngle(uint8_t degrees) {
-    servoAngle = clampRange(degrees);
+    servoAngle = Util::clamp_8(degrees, 0, 180);
     grabberServo.write(servoAngle);
 }
 
 void Grabber::changeAngle(int16_t degrees) {
-    if (degrees == 0) {
+    if (degrees < servoDeadzone) {
         return;
     }
-    servoAngle = clampRange(servoAngle + degrees);
+    servoAngle = Util::clamp_16(servoAngle + degrees, 0, 180);
     grabberServo.write(servoAngle);
 }
 
 void Grabber::moveUp(uint8_t degrees) {
-    if (degrees == 0) {
+    if (degrees < servoDeadzone) {
         return;
     }
-    servoAngle = clampRange(servoAngle + degrees);
+    servoAngle = Util::clamp_16(servoAngle + degrees, 0, 180);
     grabberServo.write(servoAngle);
 }
 
 void Grabber::moveDown(uint8_t degrees) {
-    if (degrees == 0) {
+    if (degrees < servoDeadzone) {
         return;
     }
-    servoAngle = clampRange(servoAngle - degrees);
+    servoAngle = Util::clamp_16(servoAngle - degrees, 0, 180);
     grabberServo.write(servoAngle);
 }
