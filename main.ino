@@ -11,7 +11,7 @@ static DriverStation *ds = new DriverStation();
 static constexpr uint8_t DRIVEBASE_DEADZONE = 32;
 
 static constexpr uint8_t GRABBER_DEADZONE = 5;
-static constexpr float GRABBER_COEFFICIENT = 0.3;
+static constexpr float GRABBER_COEFFICIENT = 0.1;
 
 void setup() {
     Serial.begin(115200);
