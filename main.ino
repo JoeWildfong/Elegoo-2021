@@ -23,6 +23,8 @@ void setup() {
 
     Grabber::init();
     Grabber::setDeadzone(GRABBER_DEADZONE);
+
+    Tasks::schedule(Grabber::update);
 }
 
 static void autonomous() {}

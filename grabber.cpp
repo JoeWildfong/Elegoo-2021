@@ -11,7 +11,9 @@ static constexpr uint8_t MAX_ANGLE = 160;
 static Servo grabberServo;
 
 static uint8_t grabberServoDeadzone = 0;
-static uint8_t grabberServoAngle = MIN_ANGLE;
+static uint8_t grabberServoAngle = 90;
+
+static unsigned long lastUpdate = 0;
 
 static inline uint8_t grabberClamp8(uint8_t angle) {
     return Util::clamp_8(angle, MIN_ANGLE, MAX_ANGLE);
@@ -30,7 +32,7 @@ void Grabber::setDeadzone(uint8_t deadzone) { grabberServoDeadzone = deadzone; }
 
 void Grabber::setAngle(uint8_t degrees) {
     grabberServoAngle = grabberClamp8(degrees);
-    grabberServo.write(grabberServoAngle);
+    // grabberServo.write(grabberServoAngle);
 }
 
 void Grabber::changeAngle(int16_t degrees) {
@@ -38,7 +40,7 @@ void Grabber::changeAngle(int16_t degrees) {
         return;
     }
     grabberServoAngle = grabberClamp16(grabberServoAngle + degrees);
-    grabberServo.write(grabberServoAngle);
+    // grabberServo.write(grabberServoAngle);
 }
 
 void Grabber::moveUp(uint8_t degrees) {
@@ -46,7 +48,7 @@ void Grabber::moveUp(uint8_t degrees) {
         return;
     }
     grabberServoAngle = grabberClamp16(grabberServoAngle + degrees);
-    grabberServo.write(grabberServoAngle);
+    // grabberServo.write(grabberServoAngle);
 }
 
 void Grabber::moveDown(uint8_t degrees) {
@@ -54,5 +56,39 @@ void Grabber::moveDown(uint8_t degrees) {
         return;
     }
     grabberServoAngle = grabberClamp16(grabberServoAngle - degrees);
-    grabberServo.write(grabberServoAngle);
+    // grabberServo.write(grabberServoAngle);
+}
+
+bool Grabber::update(unsigned long taskStart) {
+    constexpr float SPEED_PER_MS = 0.1;
+
+    const unsigned long timeDiff = millis() - lastUpdate;
+    if (timeDiff == 0) {
+        return false;
+    }
+    const int currentValue = grabberServo.read();
+    if (currentValue == grabberServoAngle) {
+        lastUpdate = millis();
+        return false;
+    }
+    if (currentValue < grabberServoAngle) {
+        uint8_t newValue = floor(currentValue + SPEED_PER_MS * timeDiff);
+        if (newValue > grabberServoAngle) {
+            newValue = grabberServoAngle;
+        }
+        if (newValue != currentValue) {
+            lastUpdate = millis();
+            grabberServo.write(newValue);
+        }
+    } else {
+        uint8_t newValue = ceil(currentValue - SPEED_PER_MS * timeDiff);
+        if (newValue < grabberServoAngle) {
+            newValue = grabberServoAngle;
+        }
+        if (newValue != currentValue) {
+            lastUpdate = millis();
+            grabberServo.write(newValue);
+        }
+    }
+    return false;
 }
