@@ -62,8 +62,11 @@ void Grabber::moveDown(uint8_t degrees) {
 bool Grabber::update(unsigned long taskStart) {
     constexpr float SPEED_PER_MS = 0.1;
 
-    const int currentValue = grabberServo.read();
     const unsigned long timeDiff = millis() - lastUpdate;
+    if (timeDiff == 0) {
+        return false;
+    }
+    const int currentValue = grabberServo.read();
     if (currentValue == grabberServoAngle) {
         lastUpdate = millis();
         return false;
