@@ -5,7 +5,7 @@
 
 static constexpr uint8_t GRABBER_SERVO_PIN = 3;
 
-static constexpr uint8_t MIN_ANGLE = 90;
+static constexpr uint8_t MIN_ANGLE = 60;
 static constexpr uint8_t MAX_ANGLE = 160;
 
 static Servo grabberServo;
