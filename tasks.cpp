@@ -50,6 +50,8 @@ bool Tasks::schedule(bool (*fn)(unsigned long), unsigned long duration,
 void Tasks::run() {
     for (int i = 0; i < numSlots; i++) {
         if (taskSlots[i].run()) {
+            Serial.print("Descheduling task ");
+            Serial.println(i);
             taskSlots[i].done();
         }
     }
