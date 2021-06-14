@@ -29,6 +29,6 @@ void moveDown(uint8_t degrees);
 
 /// Sends a new value to the servo. Should be called repeatedly for smooth
 /// motion.
-bool update(unsigned long taskStart = 0);
+void update();
 
 } // namespace Grabber
