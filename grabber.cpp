@@ -69,22 +69,22 @@ bool Grabber::update(unsigned long taskStart) {
         return false;
     }
     if (currentValue < grabberServoAngle) {
-        uint8_t newVal = floor(currentValue + SPEED_PER_MS * timeDiff);
-        if (newVal > grabberServoAngle) {
-            newVal = grabberServoAngle;
+        uint8_t newValue = floor(currentValue + SPEED_PER_MS * timeDiff);
+        if (newValue > grabberServoAngle) {
+            newValue = grabberServoAngle;
         }
-        if (newVal != currentValue) {
+        if (newValue != currentValue) {
             lastUpdate = millis();
-            grabberServo.write(newVal);
+            grabberServo.write(newValue);
         }
     } else {
-        uint8_t newVal = ceil(currentValue - SPEED_PER_MS * timeDiff);
-        if (newVal < grabberServoAngle) {
-            newVal = grabberServoAngle;
+        uint8_t newValue = ceil(currentValue - SPEED_PER_MS * timeDiff);
+        if (newValue < grabberServoAngle) {
+            newValue = grabberServoAngle;
         }
-        if (newVal != currentValue) {
+        if (newValue != currentValue) {
             lastUpdate = millis();
-            grabberServo.write(newVal);
+            grabberServo.write(newValue);
         }
     }
     return false;
